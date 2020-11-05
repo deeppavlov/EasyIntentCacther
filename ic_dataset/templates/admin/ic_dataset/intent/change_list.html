@@ -1,0 +1,9 @@
+{% extends "admin/change_list.html" %} {% load i18n %}
+{% block object-tools-items %}
+    {{ block.super }}
+    <li>
+        <a class="historylink" href={% url 'upload_intents_json_view' %}>Import from json</a>
+        <a class="historylink" href={% url 'download_intent_phrases' %}>Export to json</a>
+        <a class="historylink" href={% url 'train_model_view' %}>Train model</a>
+    </li>
+{% endblock %}

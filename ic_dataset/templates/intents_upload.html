@@ -1,0 +1,20 @@
+
+{% extends "admin/base_site.html" %}
+{% block content %}
+
+        <!-- Upload form. Note enctype attribute! -->
+        <form action="{% url "upload_intents_json_view" %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ message }}
+            <p>{{ form.non_field_errors }}</p>
+
+            <p>{{ form.file.label_tag }} {{ form.file.help_text }}</p>
+
+            <p>
+                {{ form.file.errors }}
+                {{ form.file }}
+            </p>
+
+            <p><input type="submit" value="Upload"/></p>
+        </form>
+{% endblock %}

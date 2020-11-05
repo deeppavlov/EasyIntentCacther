@@ -1,0 +1,8 @@
+{% extends 'admin/base_site.html' %}
+
+{% load static %}
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | EasyIntentCatcher admin {% endblock %}
+
+{% block branding %}
+    <h1 id="site-name"><a href="{% url 'admin:index' %}">EasyIntentCatcher administration</a></h1>
+{% endblock %}
