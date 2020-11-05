@@ -11,8 +11,23 @@ import numpy as np
 
 import tensorflow as tf
 import tensorflow_hub as hub
-
+from copy import copy
 from collections import defaultdict
+############################################# Universal Import ##################################
+import os, inspect, sys
+current_abs_path = os.path.abspath(inspect.getfile(inspect.currentframe()))
+# global_CTS_path = os.path.dirname(os.path.dirname(os.path.dirname(current_abs_path)))
+INTENT_CATCHER_PATH = os.path.dirname(os.path.dirname(current_abs_path))
+print("INTENT CACTHER PATH")
+print(INTENT_CATCHER_PATH)
+# if global_CTS_path not in sys.path:
+#     sys.path.append(global_CTS_path)
+# ################################################################################################
+#
+# import django
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'CTSProject.settings')
+# django.setup()
+
 
 USE_MODEL_PATH = os.environ.get('USE_MODEL_PATH', None)
 if USE_MODEL_PATH is None:
@@ -20,19 +35,23 @@ if USE_MODEL_PATH is None:
 
 INTENT_MODEL_PATH = os.environ.get('INTENT_MODEL_PATH', None)
 if INTENT_MODEL_PATH is None:
-    INTENT_MODEL_PATH = '/data/models/linear_classifier_h1.h5'
+    INTENT_MODEL_PATH = INTENT_CATCHER_PATH +'/data/models/linear_classifier_h1.h5'
 
 INTENT_DATA_PATH = os.environ.get('INTENT_DATA_PATH', None)
+
+
 if INTENT_DATA_PATH is None:
-    INTENT_DATA_PATH = '/data/intent_data.json'
+    INTENT_DATA_PATH = INTENT_CATCHER_PATH + '/data/intent_data.json'
+    # INTENT_DATA_PATH = '/data/intent_data.json'
 
 INTENT_PHRASES_PATH = os.environ.get('INTENT_PHRASES_PATH', None)
 if INTENT_PHRASES_PATH is None:
-    INTENT_PHRASES_PATH = '/data/intent_phrases.json'
+    INTENT_PHRASES_PATH = INTENT_CATCHER_PATH + '/data/intent_phrases.json'
+    # INTENT_PHRASES_PATH = '/data/intent_phrases.json'
 
 TFHUB_CACHE_DIR = os.environ.get('TFHUB_CACHE_DIR', None)
 if TFHUB_CACHE_DIR is None:
-    os.environ['TFHUB_CACHE_DIR'] = '/root/tfhub_cache'
+    os.environ['TFHUB_CACHE_DIR'] = INTENT_CATCHER_PATH + '/data/tfhub_cache'
 
 os.environ['TF_XLA_FLAGS'] = '--tf_xla_cpu_global_jit'  # Don't know that is
 
@@ -237,7 +256,8 @@ class RegMD(MultilabelDetector):
                     'confidence': 0.0
                 } for intent in self.intents
             }
-            not_detected_utterance = utterance.copy()
+            # not_detected_utterance = utterance.copy()
+            not_detected_utterance = copy(utterance)
             for intent, regs in self.regexp.items():
                 for i, utt in enumerate(utterance):
                     for reg in regs:

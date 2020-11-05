@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'ic_dataset',
-    # 'predictions_log',
+    'predictions_log',
 
  ]
 
