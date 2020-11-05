@@ -16,7 +16,6 @@ How to setup:
 
 ```
 
-sudo apt-get install rabbitmq-server?
 pip install -U "celery[redis]"
 pip install -r requirements.txt
 python manage.py runserver 0.0.0.0:8000
