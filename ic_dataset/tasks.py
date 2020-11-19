@@ -79,10 +79,13 @@ def dp_retrain_task():
         import subprocess
         # result = subprocess.run(['ls', '-l'], stdout=subprocess.PIPE)
         # results = subprocess.run(['ls', '-l'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+        model_path = "dp_intent_catcher/data/models/autocreated_model"
+        # TODO run as direct function?
         results = subprocess.run([
             "python", "dp_intent_catcher/data/create_data_and_train_model.py",
-            "--intent_phrases_path",
-            ds_path],
+            "--intent_phrases_path", ds_path,
+            "--model_path", model_path
+        ],
             # "dp_intent_catcher/data/intent_phrases_export.json"],
             stdout=subprocess.PIPE).stdout.decode('utf-8')
         print(results)

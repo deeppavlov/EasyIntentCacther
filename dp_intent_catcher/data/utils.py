@@ -67,7 +67,6 @@ def calculate_metrics(intents_min_pr, y_true, y_pred):
         pr, rec, thresholds = precision_recall_curve(
             y_true[:, i], y_pred[:, i])
         f1 = 2.0 * pr * rec / (pr + rec)
-        # f1 = f1[:-1]
         indx = np.argwhere(pr > intents_min_pr[intent]).reshape(-1)
         try:
             # Argmax F1(threshold) where precision is greater than smth
