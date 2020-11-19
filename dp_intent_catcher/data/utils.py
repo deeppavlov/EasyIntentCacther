@@ -67,15 +67,22 @@ def calculate_metrics(intents_min_pr, y_true, y_pred):
         pr, rec, thresholds = precision_recall_curve(
             y_true[:, i], y_pred[:, i])
         f1 = 2.0 * pr * rec / (pr + rec)
+        # f1 = f1[:-1]
         indx = np.argwhere(pr > intents_min_pr[intent]).reshape(-1)
-        # Argmax F1(threshold) where precision is greater than smth
-        indx = indx[np.argmax(f1[indx])]
-        intent_data[intent] = {
-            'threshold': thresholds[indx],
-            'precision': pr[indx],
-            'recall': rec[indx],
-            'f1': f1[indx]
-        }
+        try:
+            # Argmax F1(threshold) where precision is greater than smth
+            indx = indx[np.argmax(f1[indx])]
+            new_idx = indx -1
+            intent_data[intent] = {
+                'threshold': thresholds[new_idx],
+                'precision': pr[new_idx],
+                'recall': rec[new_idx],
+                'f1': f1[new_idx]
+            }
+        except Exception as e:
+            print(e)
+            import ipdb; ipdb.set_trace()
+            print(e)
     return intent_data
 
 
@@ -95,6 +102,7 @@ def generate_phrases(template_re, punctuation, limit=20000):
 
 
 def get_linear_classifier(intents, input_dim=512, dense_layers=1, use_metrics=True, multilabel=False):
+    """Creates a Keras model for intents recognition"""
     if multilabel:
         units = len(intents)
         activation = 'sigmoid'
@@ -168,11 +176,16 @@ def get_train_test_data(data, intents, random_phrases_embeddings, multilabel=Fal
     train_data['X'].append(random_phrases_embeddings)
     train_data['y'].append([[1.0 if j == len(intents) else 0.0 for j in range(num_classes)]
                             for _ in range(len(random_phrases_embeddings))])
-
-    train_data['X'] = np.concatenate(train_data['X'])
-    test_data['X'] = np.concatenate(test_data['X'])
-    train_data['y'] = np.concatenate(train_data['y'])
-    test_data['y'] = np.concatenate(test_data['y'])
+    try:
+        train_data['X'] = np.concatenate(train_data['X'])
+        test_data['X'] = np.concatenate(test_data['X'])
+        train_data['y'] = np.concatenate(train_data['y'])
+        test_data['y'] = np.concatenate(test_data['y'])
+    except Exception as e:
+        print(e)
+        print("Investigate me")
+        import ipdb; ipdb.set_trace()
+        print("Investigate me")
     return train_data, test_data
 
 
