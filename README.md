@@ -1,7 +1,7 @@
 # EasyIntentCatcher
 Administrative tool for managing datasets of IntentCacther
 
-# Feataures:
+# Features:
 - IntentCatcher dataset management: view, edit, create new training samples from WEB UI
 - Automatically prepares model for updated dataset
 
@@ -25,13 +25,14 @@ How to setup:
 pip install -U "celery[redis]"
 pip install -r requirements.txt
 python manage.py runserver 0.0.0.0:8000
-
+python manage.py createsuperuser
 ```
 
 # Useful commands
 ```
 python ic_dataset/from_db_2_icjson.py
 python data/create_data_and_train_model.py --intent_phrases_path data/intent_phrases_export.json
+python data/create_data_and_train_model.py --intent_phrases_path data/intent_phrases_export.json --model_path data/models/my_model
 ```
 
 # TODO: write system reqiurements.
