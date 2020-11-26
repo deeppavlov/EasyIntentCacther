@@ -72,14 +72,19 @@ class ClassifierDetector(AbstractDetector):
 
     """
 
-    def __init__(self, logger):
+    def __init__(self, logger, intent_model_dir_path, USE_model_URL):
         super().__init__(logger)
-        self.data = json.load(open(INTENT_DATA_PATH))
+        # TODO unify with refs in create_data_and_train_model.py:
+        intent_data_path = intent_model_dir_path + "/intent_data.json"
+        intent_model_path = intent_model_dir_path + "/linear_classifier.h5"
+        self.intent_model_dir_path = intent_model_dir_path
+        self.data = json.load(open(intent_data_path))
         if 'random' in self.data.keys():
             self.data.pop('random')
         self.intents = sorted(list(self.data.keys()))
-        self.embedder = hub.Module(USE_MODEL_PATH)
-        self.model = tf.keras.models.load_model(INTENT_MODEL_PATH)
+        self.embedder = hub.Module(USE_model_URL)
+
+        self.model = tf.keras.models.load_model(intent_model_path)
         self.sentences = tf.compat.v1.placeholder(dtype=tf.string)
         self.embedded_sentences = self.embedder(self.sentences)
 
@@ -125,16 +130,18 @@ class MultilabelDetector(AbstractDetector):
 
     """
 
-    def __init__(self, logger):
+    def __init__(self, logger, intent_model_dir_path, USE_model_URL):
         super().__init__(logger)
-        self.data = json.load(open(INTENT_DATA_PATH))
+        intent_data_path = intent_model_dir_path + "/intent_data.json"
+        intent_model_path = intent_model_dir_path + "/linear_classifier.h5"
+        self.data = json.load(open(intent_data_path))
         if 'random' in self.data:
             self.data.pop('random')
         self.intents = sorted(list(self.data.keys()))
         self.thresholds = np.array([self.data[intent]
                                     for intent in self.intents])
-        self.embedder = hub.Module(USE_MODEL_PATH)
-        self.model = tf.keras.models.load_model(INTENT_MODEL_PATH)
+        self.embedder = hub.Module(USE_model_URL)
+        self.model = tf.keras.models.load_model(intent_model_path)
         self.sentences = tf.compat.v1.placeholder(dtype=tf.string)
         self.embedded_sentences = self.embedder(self.sentences)
 
@@ -190,7 +197,7 @@ class MultilabelDetectorWithIntentHierarchy(MultilabelDetector):
     Intent priorities: choose intents from the last utterance in human sentence.
     """
 
-    def __init__(self, logger):
+    def __init__(self, logger, intent_model_dir_path, USE_model_URL):
         super().__init__(logger)
         self.intent_priorities = [
             'exit',
@@ -221,14 +228,17 @@ class RegMD(MultilabelDetector):
     Intent priorities: choose intents from the last utterance in human sentence.
     """
 
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self, logger, intent_model_dir_path, USE_model_URL=None):
+        if not USE_model_URL:
+            USE_model_URL = USE_MODEL_PATH
+        super().__init__(logger, intent_model_dir_path, USE_model_URL)
+        intent_phrases_path = intent_model_dir_path + "/intent_phrases.json"
         self.regexp = {intent: list(
             chain.from_iterable(
                 [[phrase + "\\" + punct for phrase in data['phrases']] for punct in data['punctuation']]
             )
         ) + data.get('reg_phrases', [])
-            for intent, data in json.load(open(INTENT_PHRASES_PATH))['intent_phrases'].items()}
+            for intent, data in json.load(open(intent_phrases_path))['intent_phrases'].items()}
         self.regexp = {intent: [re.compile(phrase) for phrase in phrases]
                        for intent, phrases in self.regexp.items()}
 
