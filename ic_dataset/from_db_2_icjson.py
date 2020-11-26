@@ -59,12 +59,12 @@ def export_db_2_ic_json(target_json_path):
             output_json['intent_phrases'][each_int.intent_name]["reg_phrases"] = [ph.text for ph in each_int.reg_phrases.all()]
             output_json['intent_phrases'][each_int.intent_name]["min_precision"] = each_int.min_precision
 
-        print("__"*80)
-        print(json.dumps(output_json, indent=4, sort_keys=True))
+        # print("__"*80)
+        # print(json.dumps(output_json, indent=4, sort_keys=True))
 
         with open(target_json_path, 'w', encoding='utf-8') as f:
             json.dump(output_json, f, ensure_ascii=False, indent=4, sort_keys=True)
-        print("__"*80)
+        # print("__"*80)
 
 if __name__=="__main__":
     """

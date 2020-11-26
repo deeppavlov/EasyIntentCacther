@@ -80,34 +80,36 @@ class PunctuationElement(models.Model):
 
     text = models.CharField(max_length=1)
 
-# class ICDataset(models.Model):
-#     # like "ontonotes2003.train", "ontonotes2003.valid"
-#     name = models.CharField(max_length=2000)
-#
-#     def produce_conll(self, aFilepath):
-#         pass
-#
-#     def collect_samples(self):
-#         pass
-#
-#     def load_from_conll_file(self, aFilepath):
-#         pass
 
-from ic_dataset.tasks import dp_retrain_task
+import hashlib
 
-# Signal receiver
-@receiver(signals.post_save, sender=Intent)
-def retrain_intent_catcher_model(sender, instance, created, **kwargs):
-    print("Intent save method is called")
-    from celery import app as cel_app
-    # print(cel_app.__dict__)
-    # cel_app.loader.import_default_modules()
-    # all_task_names = cel_app.tasks.keys()
-    # all_tasks = cel_app.tasks.values()
-    print("celery info:")
-    # print(all_task_names)
-    # print(all_tasks)
-    print("____")
+def calc_dataset_hash():
+    """
+    Collects all data for dataset and generates hash of it
+    :return: hash of the dataset
+    """
+    # get all phrases and regexps and punctuations and calc their hash
+    phrases = [ph.text for ph in PhraseExpression.objects.all()]
+    regexs = [regx.text for regx in RegularExpression.objects.all()]
+    puncts = [pe.text for pe in PunctuationElement.objects.all()]
 
-    dp_retrain_task.delay()
-    print("Request for model retraining is set...")
+    phrases_str = ", ".join(phrases)
+    regexs_str = ", ".join(regexs)
+    puncts_str = ", ".join(puncts)
+    merged_text = f"{phrases_str} {regexs_str} {puncts_str}"
+
+    hash_object = hashlib.md5(merged_text.encode())
+    hash_val = hash_object.hexdigest()
+    print("Datset hash_val")
+    print(hash_val)
+    return hash_val
+
+# from ic_dataset.tasks import dp_retrain_task
+#
+# # Signal receiver
+# @receiver(signals.post_save, sender=Intent)
+# def retrain_intent_catcher_model(sender, instance, created, **kwargs):
+#     print("Intent save method is called")
+#     # hash = calc_dataset_hash()
+#     # dp_retrain_task.delay()
+#     print("Request for model retraining is set...")
