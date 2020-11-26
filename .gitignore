@@ -2,3 +2,7 @@ __pycache__
 .git
 *.log
 .idea
+tfhub_model/
+metrics/
+dp_intent_catcher/data
+db.sqlite3
