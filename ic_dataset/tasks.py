@@ -1,3 +1,4 @@
+import os
 from celery import Celery, Task
 from django.core.cache import cache
 from celery.utils.log import get_task_logger
@@ -25,68 +26,45 @@ class SingletonTask(Task):
         lock.release()
 
 
-# app = Celery('tasks', broker='pyamqp://guest@localhost//')
-#
-# @app.task
-# def add(x, y):
-#     print(f"Adding {x} to {y}")
-#     return x + y
-#
-#
-# # @shared_task(base=SingletonTask)
-# @app.task(base=SingletonTask)
-# def test_task():
-#     from time import sleep
-#     print("Slleeep task")
-#     sleep(10)
-
-
-# @app.task(base=SingletonTask)
 @shared_task(base=SingletonTask)
 def dp_retrain_task():
     """
-    Task which generates dataset from DB
-    then launches trainig of the model
-    :return:
+    Task which generates dataset from DB,
+    then it launches training of the model
     """
+    from ic_dataset.from_db_2_icjson import export_db_2_ic_json
+    from ic_dataset.models import calc_dataset_hash
 
-    # TODO check that dataset actually changed
-    # TODO get all tasks?
-    from celery import app as cel_app
-    print(cel_app.__dict__)
-    # cel_app.loader.import_default_modules()
-    # all_task_names = cel_app.tasks.keys()
-    # all_tasks = cel_app.tasks.values()
-    # print("celery info:")
-    # print(all_task_names)
-    # print(all_tasks)
-    print("____")
-    # TODO generate json: data/intent_phrases.json from DB data
-    from ic_dataset.from_db_2_icjson import export_db_2_ic_json, ds_path
-    print("Expoerting dataset file")
+    hash = calc_dataset_hash()
+    # model_path = "dp_intent_catcher/data/models/autocreated_model"
+    model_path = f"dp_intent_catcher/data/models/{hash}"
+    if not os.path.exists(model_path):
+        os.makedirs(model_path)
+    else:
+        # TODO check if model is really trained and workable?
+        # print("Path for model exist then no changes happened no need to retrain? Exiting.")
+        # return
+        print(f"Path for model exist: {model_path}. Retraining")
+
+    print("Exporting dataset file...")
+    # TODO refactor multiuse of ds path?
+    ds_path = model_path + "/intent_phrases.json"
     export_db_2_ic_json(ds_path)
     print("Exported. Start adding op")
-    ggg = True
-    if ggg:
-        return
-    # +++++
-    # retrain
-    # TODO stop all pending training tasks
+    # TODO cancel/kill all ongoing training tasks
     # https://docs.celeryproject.org/en/latest/reference/celery.contrib.abortable.html
-    # TODO add task for model training
-    # stop current task and start the new?
+    # ggg = True
+    # if ggg:
+    #     return
+    # retrain
     try:
         import subprocess
-        # result = subprocess.run(['ls', '-l'], stdout=subprocess.PIPE)
-        # results = subprocess.run(['ls', '-l'], stdout=subprocess.PIPE).stdout.decode('utf-8')
-        model_path = "dp_intent_catcher/data/models/autocreated_model"
         # TODO run as direct function?
         results = subprocess.run([
             "python", "dp_intent_catcher/data/create_data_and_train_model.py",
             "--intent_phrases_path", ds_path,
             "--model_path", model_path
-        ],
-            # "dp_intent_catcher/data/intent_phrases_export.json"],
+            ],
             stdout=subprocess.PIPE).stdout.decode('utf-8')
         print(results)
         # but may be not successfull
