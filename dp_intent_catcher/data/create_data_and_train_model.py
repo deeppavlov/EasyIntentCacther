@@ -134,8 +134,19 @@ def create_data_and_train_model(intent_phrases_path, model_path, epochs=7, model
     modle_clf_file_path = model_path + "/linear_classifier.h5"
     model.save(modle_clf_file_path)
     INTENT_DATA_PATH = model_path + '/intent_data.json'
+
     print(f"Saving thresholds to: {INTENT_DATA_PATH}")
     json.dump(thresholds, open(INTENT_DATA_PATH, 'w'))
+
+    # we also need to save intent_phrases.json into output
+    try:
+        from shutil import copyfile
+        copyfile(intent_phrases_path, model_path+"/intent_phrases.json")
+    except Exception as e:
+        print("Skipping copying intent_phrases.json because of exception:")
+        print(e)
+    print(f"Model successfully saved to: {model_path}!")
+    return model_path
 
 
 if __name__ == '__main__':
