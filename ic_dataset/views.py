@@ -1,4 +1,3 @@
-# import sys
 import os
 import json
 import tempfile
@@ -11,7 +10,6 @@ from ic_dataset.from_db_2_icjson import export_db_2_ic_json
 from django.http import FileResponse
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# sys.path.append(ROOT_DIR)
 
 
 def download_intent_phrases(request):
@@ -48,6 +46,7 @@ def upload_intents_json_view(request):
             # TODO validate file before uploading to DB!
             update_from_ic_ds_formatted_dict(data)
             message = 'Intents import successfully completed!'
+            # TODO redirect to intents list (render intents list with success message)
         else:
             message = 'The form is not valid. Fix the following error:'
     else:
