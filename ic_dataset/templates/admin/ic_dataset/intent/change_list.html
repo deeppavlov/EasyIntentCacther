@@ -2,8 +2,8 @@
 {% block object-tools-items %}
     {{ block.super }}
     <li>
-        <a class="historylink" href={% url 'upload_intents_json_view' %}>Import from json</a>
-        <a class="historylink" href={% url 'download_intent_phrases' %}>Export to json</a>
-        <a class="historylink" href={% url 'train_model_view' %}>Train model</a>
+        <a class="historylink" href={% url 'ic_dataset:upload_intents_json_view' %}>Import from json</a>
+        <a class="historylink" href={% url 'ic_dataset:download_intent_phrases' %}>Export to json</a>
+        <a class="historylink" href={% url 'ic_dataset:train_model_view' %}>Train model</a>
     </li>
 {% endblock %}

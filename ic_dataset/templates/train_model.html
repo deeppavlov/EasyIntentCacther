@@ -1,5 +1,13 @@
-
 {% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+  &rsaquo; <a href="{% url 'admin:ic_dataset_intent_changelist' %}">IC Dataset Intents</a>
+  &rsaquo; <a href="{% url 'ic_dataset:upload_intents_json_view' %}">Upload intents</a>
+</div>
+{% endblock %}
 
 {% block content %}
         <!-- Upload form. Note enctype attribute! -->

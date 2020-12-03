@@ -15,23 +15,18 @@ ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 def download_intent_phrases(request):
     """View for exporting from DB to intent_phrases.json"""
     fd, ds_path = tempfile.mkstemp(suffix='.json')
-    # try:
     export_db_2_ic_json(ds_path)
     if os.path.exists(ds_path):
         response = FileResponse(open(ds_path, 'rb'), as_attachment=True,
                                 filename="intent_phrases_export.json")
         return response
     raise Http404
-    # finally:
-    #     os.remove(ds_path)
-    #     raise Http404
 
 
 def upload_intents_json_view(request):
     """
     Handles uploading of intent_phrase.json file and exporting intents to DB
     """
-
     message = 'Upload your intent_phrases.json!'
     # Handle file upload
     if request.method == 'POST':
@@ -57,12 +52,12 @@ def upload_intents_json_view(request):
     return render(request, 'intents_upload.html', context)
 
 def train_model_view(request):
-    from ic_dataset.tasks import dp_retrain_task
+    import ic_dataset.tasks
     from ic_dataset.models import calc_dataset_hash
     hash = calc_dataset_hash()
     context = {
         'message': f"Model is launched for training. It's hash code is: {hash}. Visit api in about 25 minutes..."
     }
-
-    dp_retrain_task.delay()
+    ic_dataset.tasks.dp_retrain_task.delay()
+    # dp_retrain_task.delay()
     return render(request, 'train_model.html', context)
