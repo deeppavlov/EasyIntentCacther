@@ -26,7 +26,8 @@ SECRET_KEY = 'l=k%s0h3^w*0f)@*y*+-^df$ho8vh9cmvsdfsdf22jif_i5+vjj!+^'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "93.175.20.219"
+    "93.175.20.219",
+    '192.168.10.168'
 ]
 
 
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
 
     'ic_dataset',
     'predictions_log',
+    'prediction_models',
 
  ]
 
@@ -146,3 +148,5 @@ CACHES = {
         }
     }
 }
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
