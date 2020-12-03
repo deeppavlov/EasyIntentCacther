@@ -11,25 +11,6 @@ DP_DATA_DIR = os.path.dirname(os.path.abspath(__file__))
 # TODO make configurable?
 MODELS_DIR = DP_DATA_DIR + "/models"
 METRICS_DIR = DP_DATA_DIR + '/metrics'
-# TODO outputting model to remote ssh feature support
-# model configs:
-MULTILABEL = True
-TRAIN_SIZE = 0.5
-DENSE_LAYERS = 1
-
-
-# Create metrics directory if not exists
-if not os.path.exists(METRICS_DIR):
-    os.makedirs(METRICS_DIR)
-
-USE_MODEL_PATH = os.environ.get('USE_MODEL_PATH', None)
-if USE_MODEL_PATH is None:
-    USE_MODEL_PATH = 'https://tfhub.dev/google/universal-sentence-encoder/1'
-
-TFHUB_CACHE_DIR = os.environ.get('TFHUB_CACHE_DIR', None)
-if TFHUB_CACHE_DIR is None:
-    os.environ['TFHUB_CACHE_DIR'] = DP_DATA_DIR + '/tfhub_model'
-
 
 def create_data_and_train_model(intent_phrases_path, model_path, epochs=7, model_name=None):
     """
@@ -40,6 +21,24 @@ def create_data_and_train_model(intent_phrases_path, model_path, epochs=7, model
     :param epochs:
     :return:
     """
+
+    # TODO outputting model to remote ssh feature support
+    # model configs:
+    MULTILABEL = True
+    TRAIN_SIZE = 0.5
+    DENSE_LAYERS = 1
+
+    # Create metrics directory if not exists
+    if not os.path.exists(METRICS_DIR):
+        os.makedirs(METRICS_DIR)
+
+    USE_MODEL_PATH = os.environ.get('USE_MODEL_PATH', None)
+    if USE_MODEL_PATH is None:
+        USE_MODEL_PATH = 'https://tfhub.dev/google/universal-sentence-encoder/1'
+
+    TFHUB_CACHE_DIR = os.environ.get('TFHUB_CACHE_DIR', None)
+    if TFHUB_CACHE_DIR is None:
+        os.environ['TFHUB_CACHE_DIR'] = DP_DATA_DIR + '/tfhub_model'
 
     if not os.path.exists(model_path):
         os.makedirs(model_path)
@@ -60,6 +59,8 @@ def create_data_and_train_model(intent_phrases_path, model_path, epochs=7, model
     intents = sorted(list(intent_phrases.keys()))
     print("Creating  data...")
     print("Intent: number of original phrases")
+    from .utils import generate_phrases, score_model, get_linear_classifier, get_train_data
+    print("Utils imported")
     with tf.compat.v1.Session() as sess:
         sess.run([tf.compat.v1.global_variables_initializer(),
                   tf.compat.v1.tables_initializer()])
@@ -146,7 +147,7 @@ def create_data_and_train_model(intent_phrases_path, model_path, epochs=7, model
         print("Skipping copying intent_phrases.json because of exception:")
         print(e)
     print(f"Model successfully saved to: {model_path}!")
-    return model_path
+    return model
 
 
 if __name__ == '__main__':
