@@ -1,6 +1,6 @@
 from prediction_models.models import PredictionModel
-# from dp_intent_catcher.data.create_data_and_train_model import create_data_and_train_model
 import dp_intent_catcher.data.create_data_and_train_model
+from .ssh_utils import upload_to_ssh_recursive
 
 
 class Trainer():
@@ -25,6 +25,9 @@ class Trainer():
         else:
             pm.state = PredictionModel.STATE_TRAINED
             pm.save()
+            upload_to_ssh_recursive(model_path)
+            print("SSH export completed!")
         # TODO validate that it trained and reproducible?
 
         return pm
+
