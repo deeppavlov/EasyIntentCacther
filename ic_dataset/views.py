@@ -8,6 +8,7 @@ from ic_dataset.from_icjson_2_db import update_from_ic_ds_formatted_dict
 from .forms import UploadFileForm
 from ic_dataset.from_db_2_icjson import export_db_2_ic_json
 from django.http import FileResponse
+from django.urls import reverse
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -55,8 +56,11 @@ def train_model_view(request):
     import ic_dataset.tasks
     from ic_dataset.models import calc_dataset_hash
     hash = calc_dataset_hash()
+
+    models_url = reverse('admin:prediction_models_predictionmodel_changelist', args=None)
     context = {
-        'message': f"Model is launched for training. It's hash code is: {hash}. Visit api in about 25 minutes..."
+        'message': f"Model is launched for training. It's hash code is: {hash}. Visit api in about 25 minutes... "
+        f"You can monitor the status at <a href='{models_url}'>{models_url}</a>."
     }
     ic_dataset.tasks.dp_retrain_task.delay()
     # dp_retrain_task.delay()
