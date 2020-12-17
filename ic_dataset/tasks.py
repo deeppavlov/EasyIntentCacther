@@ -8,7 +8,7 @@ import sys
 import os
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(ROOT_DIR)
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "EasyIntentCatcher.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "EasyIntentCatcher.settings.local")
 import django
 django.setup()
 # #####################################################
@@ -17,27 +17,7 @@ logger = get_task_logger(__name__)
 celery = Celery('tasks')
 
 
-class SingletonTask(Task):
-    def __call__(self, *args, **kwargs):
-        lock = cache.lock(self.name)
-
-        if not lock.acquire(blocking=False):
-            print("{} failed to lock".format(self.name))
-            logger.info("{} failed to lock".format(self.name))
-            return
-
-        try:
-            super(SingletonTask, self).__call__(*args, **kwargs)
-        except Exception as e:
-            print("Releasing lock")
-            logger.info("Releasing lock")
-            lock.release()
-            raise e
-        lock.release()
-
-
-
-@shared_task(base=SingletonTask)
+@shared_task()
 def dp_retrain_task():
     """
     Task which generates dataset from DB,
@@ -45,7 +25,7 @@ def dp_retrain_task():
     """
     from ic_dataset.from_db_2_icjson import export_db_2_ic_json
     from ic_dataset.models import calc_dataset_hash
-
+    print("Retraining")
     hash = calc_dataset_hash()
     # model_path = "dp_intent_catcher/data/models/autocreated_model"
     model_path = f"dp_intent_catcher/data/models/{hash}"
@@ -84,7 +64,7 @@ def xsum(numbers):
     return sum(numbers)
 
 # deprecated
-@shared_task(base=SingletonTask)
+@shared_task()
 def dp_retrain_task_cli():
     """
     Task which generates dataset from DB,
@@ -111,9 +91,6 @@ def dp_retrain_task_cli():
     print("Exported. Start adding op")
     # TODO cancel/kill all ongoing training tasks
     # https://docs.celeryproject.org/en/latest/reference/celery.contrib.abortable.html
-    # ggg = True
-    # if ggg:
-    #     return
     # retrain
     try:
         import subprocess

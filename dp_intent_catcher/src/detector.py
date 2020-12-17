@@ -16,17 +16,10 @@ from collections import defaultdict
 ############################################# Universal Import ##################################
 import os, inspect, sys
 current_abs_path = os.path.abspath(inspect.getfile(inspect.currentframe()))
-# global_CTS_path = os.path.dirname(os.path.dirname(os.path.dirname(current_abs_path)))
 INTENT_CATCHER_PATH = os.path.dirname(os.path.dirname(current_abs_path))
 print("INTENT CACTHER PATH")
 print(INTENT_CATCHER_PATH)
-# if global_CTS_path not in sys.path:
-#     sys.path.append(global_CTS_path)
 # ################################################################################################
-#
-# import django
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'CTSProject.settings')
-# django.setup()
 
 
 USE_MODEL_PATH = os.environ.get('USE_MODEL_PATH', None)

@@ -9,18 +9,13 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
-
+# here is coommon settings
+# WARNING you need to create a local.py file with private settings and specify SECRET_KEY there
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'l=k%s0h3^w*0f)@*y*+-^df$ho8vh9cmvsdfsdf22jif_i5+vjj!+^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -135,8 +130,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# CELERY_IMPORTS = ['ic_dataset.tasks']
-# CELERY_BROKER='pyamqp://guest@localhost//'
 CELERY_BROKER='redis://localhost:6379/0'
 
 CACHES = {
@@ -149,4 +142,5 @@ CACHES = {
     }
 }
 
+# restricts number of phrases you can attach to intent:
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
