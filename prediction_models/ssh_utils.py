@@ -33,6 +33,7 @@ def upload_to_ssh_recursive(model_path):
     Given a path to model it export it to remote ssh server
     :param model_path: str path to model on local server
     :return: None
+    :raise Exception in case of errors with SSH connection or uploading
     """
     # transport = paramiko.Transport((settings.SSH_HOST, settings.SSH_PORT))
     # transport.connect(username=settings.SSH_USERNAME, password=settings.SSH_PASSWORD)
