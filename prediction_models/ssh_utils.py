@@ -1,6 +1,7 @@
 import paramiko
 import os
 from django.conf import settings
+from constance import config
 
 
 class MySFTPClient(paramiko.SFTPClient):
@@ -28,12 +29,20 @@ class MySFTPClient(paramiko.SFTPClient):
 
 
 def upload_to_ssh_recursive(model_path):
-    transport = paramiko.Transport((settings.SSH_HOST, settings.SSH_PORT))
-    transport.connect(username=settings.SSH_USERNAME, password=settings.SSH_PASSWORD)
+    """
+    Given a path to model it export it to remote ssh server
+    :param model_path: str path to model on local server
+    :return: None
+    """
+    # transport = paramiko.Transport((settings.SSH_HOST, settings.SSH_PORT))
+    # transport.connect(username=settings.SSH_USERNAME, password=settings.SSH_PASSWORD)
+    transport = paramiko.Transport((config.SSH_HOST, config.SSH_PORT))
+    transport.connect(username=config.SSH_USERNAME, password=config.SSH_PASSWORD)
     sftp = MySFTPClient.from_transport(transport)
 
     model_code = model_path.split("/")[-1]
-    target_path = settings.SSH_EXPORT_TARGET_BASE_PATH+model_code
+    # target_path = settings.SSH_EXPORT_TARGET_BASE_PATH+model_code
+    target_path = config.SSH_EXPORT_TARGET_BASE_PATH+model_code
     print('target_path')
     print(target_path)
     sftp.mkdir(target_path, ignore_existing=True)

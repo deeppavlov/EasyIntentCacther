@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
 
+    'constance.backends.database',
+    'constance',
+
     'ic_dataset',
     'predictions_log',
     'prediction_models',
@@ -144,3 +147,31 @@ CACHES = {
 
 # restricts number of phrases you can attach to intent:
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
+
+
+# Configs App:
+CONSTANCE_SUPERUSER_ONLY = False
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+
+CONSTANCE_CONFIG = {
+    'SSH_EXPORT_MODELS': (False, "Enable models exporting to SSH server", bool),
+    'SSH_HOST': ('share.ipavlov.mipt.ru', 'SSH Host for models export'),
+    'SSH_USERNAME': ('', 'Username for SSH export'),
+    'SSH_PASSWORD': ('', 'Password for SSH export', 'password_input_field'),
+    'SSH_PORT': (22, 'SSH Port', int),
+    'SSH_EXPORT_TARGET_BASE_PATH': ("/home/export/intent_catcher/", 'directory path for exported models on SSH server')
+}
+
+CONSTANCE_CONFIG_FIELDSETS = {
+    'SSH Export Options': ('SSH_EXPORT_MODELS',
+                        'SSH_HOST', 'SSH_PORT', 'SSH_USERNAME', 'SSH_PASSWORD', 'SSH_EXPORT_TARGET_BASE_PATH'),
+    # 'Theme Options': ('THEME',),
+}
+
+CONSTANCE_ADDITIONAL_FIELDS = {
+    'password_input_field': ['django.forms.fields.CharField', {
+        'widget': 'django.forms.PasswordInput',
+        'widget_kwargs': {"render_value": True},
+    }],
+}

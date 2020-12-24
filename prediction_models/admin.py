@@ -1,13 +1,20 @@
 from django.contrib import admin
 from prediction_models.models import PredictionModel
 from prediction_models.ssh_utils import upload_to_ssh_recursive
+from constance import config
 
 
 def models_export_ssh(modeladmin, request, queryset):
-    for each_model in queryset:
-        print(each_model.storage_path)
-        upload_to_ssh_recursive(each_model.storage_path)
-        print("Done.")
+    """Django action for exporting Prediction model to SSH Server"""
+    if config.SSH_EXPORT_MODELS:
+        for each_model in queryset:
+            print(each_model.storage_path)
+            upload_to_ssh_recursive(each_model.storage_path)
+            print("Done.")
+    else:
+        # Request to enable ssh export in settings
+        print("Enable SSH_EXPORT_MODELS in settings!")
+        pass
 
 models_export_ssh.short_description = "Export models to remote SSH server"
 
