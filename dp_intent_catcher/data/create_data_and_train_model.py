@@ -5,7 +5,7 @@ import argparse
 import tensorflow as tf
 import tensorflow_hub as hub
 from collections import OrderedDict
-from utils import *
+from .utils import *
 
 DP_DATA_DIR = os.path.dirname(os.path.abspath(__file__))
 # TODO make configurable?
