@@ -1,6 +1,6 @@
 import paramiko
 import os
-from django.conf import settings
+# from django.conf import settings
 from constance import config
 
 
