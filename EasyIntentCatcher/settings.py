@@ -13,8 +13,21 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 # WARNING you need to create a local.py file with private settings and specify SECRET_KEY there
 import os
 
+try:
+    from .secret_key import SECRET_KEY
+except ImportError:
+    SETTINGS_DIR = os.path.abspath(os.path.dirname(__file__))
+    from django.core.management.utils import get_random_secret_key
+    sec_key = get_random_secret_key()
+    with open(f'{SETTINGS_DIR}/secret_key.py', "w") as sec_key_file:
+        sec_key_file.write(f"SECRET_KEY='{sec_key}'")
+    # generate_secret_key(os.path.join(, 'secret_key.py'))
+    from .secret_key import SECRET_KEY
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -24,8 +37,11 @@ ALLOWED_HOSTS = [
     "0.0.0.0",
     "127.0.0.1",
     "localhost",
+    "*.*.*.*",
+    # TODO del me
     "93.175.20.219",
-    '192.168.10.168'
+    "192.168.10.168",
+
 ]
 
 
@@ -67,10 +83,16 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            '/home/alx/Cloud/aiml_related/EasyIntentCatcher/ic_dataset/templates/admin',
-            '/home/alx/Cloud/aiml_related/EasyIntentCatcher/ic_dataset/templates',
-            '/home/alx/Cloud/aiml_related/EasyIntentCatcher/templates',
-            '/home/alx/Cloud/aiml_related/EasyIntentCatcher/templates/admin',
+            # TODO dirs in rel path
+            'ic_dataset/templates/admin',
+            'ic_dataset/templates',
+            'templates',
+            'templates/admin',
+
+            # '/home/alx/Cloud/aiml_related/EasyIntentCatcher/ic_dataset/templates/admin',
+            # '/home/alx/Cloud/aiml_related/EasyIntentCatcher/ic_dataset/templates',
+            # '/home/alx/Cloud/aiml_related/EasyIntentCatcher/templates',
+            # '/home/alx/Cloud/aiml_related/EasyIntentCatcher/templates/admin',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -159,7 +181,7 @@ CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
 CONSTANCE_CONFIG = {
     'SSH_EXPORT_MODELS': (False, "Enable models exporting to SSH server", bool),
-    'SSH_HOST': ('share.ipavlov.mipt.ru', 'SSH Host for models export'),
+    'SSH_HOST': ('', 'SSH Host for models export'),
     'SSH_USERNAME': ('', 'Username for SSH export'),
     'SSH_PASSWORD': ('', 'Password for SSH export', 'password_input_field'),
     'SSH_PORT': (22, 'SSH Port', int),

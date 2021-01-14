@@ -7,7 +7,7 @@ import os
 import argparse
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(ROOT_DIR)
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "EasyIntentCatcher.settings.local")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "EasyIntentCatcher.settings")
 import django
 django.setup()
 # #####################################################
