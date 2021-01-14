@@ -14,39 +14,45 @@ TODO add screenshots:
   - prediction api
   
 
-Requirements:
+# Requirements:
+Assure your server fit following requirements:
  - python 3.7.9
+   - conda -N new_env python=3.7
+ - redis-server
+   -   sudo apt-get install redis-server
 
-Make local.py file
+# Set Up
 How to setup:
 
 ```
+git clone https://github.com/deepmipt/EasyIntentCacther
+cd EasyIntentCacther
 pip install -r requirements.txt
 python manage.py migrate
+```
+Now you need to launch worker for training tasks and web server for managing dataset and training system.
+
+# Run worker for training task execution:
+```
+celery  -A EasyIntentCatcher worker -l INFO
+```
+
+
+# Run server for web-administration tool
+```
 python manage.py runserver 0.0.0.0:8000
-python manage.py createsuperuser
-
-
-pip install -U "celery[redis]"
-
 ```
 
-# Run worker for training task:
-```
-python manage.py runserver 0.0.0.0:8000
-EasyIntentCatcher/ic_dataset$ celery -A tasks worker --loglevel=INFO
+Now you can browse your intents, train a model, export to SSH server and use it for predictions!
 
-```
+# Useful commands for work with IntentCatcher on lowel level interface
 
-# Useful commands for work with IntentCatcher
-TODO update with DeepPavlov
+Generate IntentCather JSON dataset specification from Database contents:
 ```
 python ic_dataset/from_db_2_icjson.py
-python data/create_data_and_train_model.py --intent_phrases_path data/intent_phrases_export.json
-python data/create_data_and_train_model.py --intent_phrases_path data/intent_phrases_export.json --model_path data/models/my_model
 ```
 
-# TODO: write system reqiurements.
-- RAM requiements
-- Video Memory Requirements
- (for base config) 
+Train model from IntentCather JSON dataset specification with specification of target path for model:
+```
+python data/create_data_and_train_model.py --intent_phrases_path data/intent_phrases_export.json --model_path data/models/my_model
+```
