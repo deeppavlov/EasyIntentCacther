@@ -62,6 +62,7 @@ List of intents:
 ![210121_easyintentcatcher_intents_list](https://user-images.githubusercontent.com/2207706/105342371-55395a00-5bf1-11eb-83b8-5d2662453999.png)
 
 Intent editing: 
+
 ![210122_easyintentcatcher_intents_edit](https://user-images.githubusercontent.com/2207706/105342390-5c606800-5bf1-11eb-8e7b-2707041d381c.png)
 
 History of predictions:
@@ -71,6 +72,7 @@ History of trained models:
 ![210124_easyintentcatcher_trained_model](https://user-images.githubusercontent.com/2207706/105342426-65e9d000-5bf1-11eb-8ee9-eb9964e7be72.png)
 
 Prediction API:
+
 ![210125_easyintentcatcher_prediction_API](https://user-images.githubusercontent.com/2207706/105342443-6a15ed80-5bf1-11eb-937f-097a1c997f69.png)
 
 API Response example:
