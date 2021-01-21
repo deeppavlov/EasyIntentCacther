@@ -58,8 +58,8 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'constance.backends.database',
-    'constance',
-
+    # 'constance',
+    'prediction_models.apps.IntentCactherConstance',
     'ic_dataset',
     'predictions_log',
     'prediction_models',
@@ -159,6 +159,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CELERY_BROKER='redis://localhost:6379/0'
+CELERY_BROKER_URL='redis://localhost:6379/0'
 
 CACHES = {
     'default': {
