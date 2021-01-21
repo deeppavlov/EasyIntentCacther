@@ -57,6 +57,15 @@ Train model from IntentCather JSON dataset specification with specification of t
 python data/create_data_and_train_model.py --intent_phrases_path data/intent_phrases_export.json --model_path data/models/my_model
 ```
 
+# Docker
+```
+cd docker
+docker build -t easy_ic .
+docker run --rm -p 8000:8000 easy_ic
+```
+For now, you could have some problems with stopping this container. To find container name use `docker ps` and then
+`docker stop <container-name>`
+
 # Screenshots
 List of intents:
 ![210121_easyintentcatcher_intents_list](https://user-images.githubusercontent.com/2207706/105342371-55395a00-5bf1-11eb-83b8-5d2662453999.png)
