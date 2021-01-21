@@ -10,6 +10,6 @@ RUN apt update && \
 
 WORKDIR /EasyIntentCacther
 
-CMD redis-server > redis.log 2>&1 & \
-    celery  -A EasyIntentCatcher worker -l INFO > celery.log 2>&1 & \
+CMD redis-server > logs/redis.log 2>&1 & \
+    celery -A EasyIntentCatcher worker -l INFO > logs/celery.log 2>&1 & \
     python manage.py runserver 0.0.0.0:8000
